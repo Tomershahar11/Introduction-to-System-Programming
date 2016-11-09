@@ -2,37 +2,54 @@
 #include <stdlib.h>
 
 
-// Communal to both modes
-//char* getInputFileData(char* inputFilName)
+//char* callSolver(char soduko[][])
 //{
-//	use the function f.gets to open the txt file and convert it to string
-//	return buffer string of chars filled with input data
-//}
-//	
-// void parseCharIntoMatrix(char *data)
-//{
-//	parse the input data from a string into a 9X9 matrix called soduko[][], built from 'chars' & number 1-9;
-//	Take into account only valid numbers 1-9, '.' sign and special 'chars' 
-//}
-
-
-//char* callSolver(char *soduko)
-//{
-//	assign another matrix of possibilties. what type of? stucture? string?
-//	going over the matrix from top-left side. For each cell do:	
+//	going over the matrix from top-left side. For each cell do:
 //	{
 //		if num => continue to next cell
 //		if dot => 
 //		{
-//			call int checkPossibleNumForCell(int *soduko, int row, int column)
+//			call int checkPossibleNumForCell(char *soduko, int row, int column)
 //			{
-//					go over the numbers from 1 to 9 and for each:
-//					checkRow: whether the num is already there => break to num++, ow continue for next checking
-//					checkCol: whether the num is already there => break to num++, ow continue for next checking
-//					checkSubGrid: whether the num is already there => break to num++, ow continue for next checking
-//					ow => assign num in the matching cell in possibilties matrix;
-//					check possibilties matrix for the cell: 
-//					if cell has one num => 
+//				allocate a 9cell array initiated by 'ones':
+//				int flagArray[9] = {1,1,1,1,1,1,1,1,1};
+
+//				callCheckRow(soduko, flagArray, row);
+//				void callCheckRow(char soduko, int array[], int row);
+//				{
+//					for col=0 to 8 in soduko,
+//					at every existed number 'exist' stop and modify flagArray[exist] = '0'; 
+//				}
+//				callCheckCol(soduko, flagArray, col);
+//				void callCheckCol(char soduko, int array[], int col);			
+//				{		
+//					for row=0 to 8 in soduko,
+//					at every existed number 'exist' stop and modify flagArray[exist] = '0'; 
+//				}
+//				callCheckSubGrid(soduko, flagArray, row, col);
+//				void callCheckSubGrid(char soduko, int array[], int row, int col);			
+//				{		
+//					going in some order on the specific subGrid,
+//					at every existed number 'exist' stop and modify flagArray[exist] = '0'; 
+//				}
+
+//				count all 'one' values at flagArray[];
+//				if cnt == 1 => find the value and return its index;
+//				ow => return 0;
+//			}
+
+//			check the returned value for checkPossibleNumForCell();
+//			if 0 => continue to next cell without doing nothing.
+//			ow => update soduko[row][col] = returned value;
+
+//		stop condition ??
+
+//				checkRow: whether the num is already there => break to num++, ow continue for next checking
+//				checkCol: whether the num is already there => break to num++, ow continue for next checking
+//				checkSubGrid: whether the num is already there => break to num++, ow continue for next checking
+//				ow => assign num in the matching cell in possibilties matrix;
+//				check possibilties matrix for the cell: 
+//				if cell has one num => 
 //					{
 //						do the following:
 //						update num in soduko[row][col]
@@ -97,12 +114,24 @@ int main(int argc, char *argv[]){
 	char *runMode, *inputFileName;
 	char* data[11][11] = {0}; // TODO: need to add a #define ROWS/COLS in .h file
 
+	//Not sure if you convert the txt into string at that point ??
+	//Communal to both modes
+	//char* getInputFileData(char* inputFilName)
+	//{
+	//	use the function f.gets to open the txt file and convert it to string
+	//	return buffer of chars filled with input data
+	//}
+
 	// TODO: check if the arguments are givent at run time or needed inside the program
 	runMode = argv[1]; 
 	inputFileName = argv[2];
 	// open the file from argv[1]
 	// parse file to manegable format (without the seperations?, create structures?)
 	// check running mode (argv[0]) and call the relevant function (0=>solver, 1=>checker)
+
+	//before calling the functions we must parse the buffer into a 9X9 matrix named soduko[][]
+	//this will save us to do it twice inside each function
+
 	//switch (runMode)
 	//{
 	//case 0:
