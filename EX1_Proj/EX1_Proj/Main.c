@@ -2,29 +2,55 @@
 #include <stdlib.h>
 
 
-//char* callSolver(char soduko[][])
-//{
-//	going over the matrix from top-left side. For each cell do:
-//	{
-//		if num => continue to next cell
-//		if dot => 
-//		{
-//			call int checkPossibleNumForCell(char *soduko, int row, int column)
-//			{
-//				allocate a 9cell array initiated by 'ones':
-//				int flagArray[9] = {1,1,1,1,1,1,1,1,1};
+char* callSolver(char soduko[9][9])
+{
+//	going over the matrix from top-left side and start fill the matrix
+	int i, j;
+	for(i=0;i<9;i++)
+	{
+		for(j=0;j<9;j++)
+		{
+			if (soduko[i][j] != '.') continue;
+			else
+			{
+//				check possibilities for that cell
+				checkPossibleNumForCell(soduko, i, j);
 
-//				callCheckRow(soduko, flagArray, row);
-//				void callCheckRow(char soduko, int array[], int row);
+				int checkPossibleNumForCell(char* soduko,int row, int col)
+				{
+//					allocate a 9cell array initiated by 'ones':
+					int flagArray[9] = {1,1,1,1,1,1,1,1,1};
+					callCheckRow(soduko, flagArray, row);
+		
+					void callCheckRow(char soduko, int array[], int row)
+					{
+						for (int j = 0; j < 9; j++)
+							if (soduko[row][j] != '.') array[soduko[row][j]] = 0;
+					}
+
+					callCheckCol(soduko, flagArray, col);
+
+					void callCheckCol(char soduko, int array[], int col)
+					{
+						for (int i = 0; i < 9; i++)
+							if (soduko[i][col] != '.') array[soduko[i][col]] = 0;
+					}
+
+					callCheckSubGrid(soduko, flagArray, row, col);
+
+					void callCheckSubGrid(char soduko, int array[], int row, int col)
+					{
+						int rowSubgrid = (row / 3) * 3;
+						int colSubGrid = (col / 3) * 3;
+						int i, j;
+						for (i = rowSubgrid; i < rowSubgrid + 3; i++)
+						{
+							for (j = colSubGrid; j < colSubGrid + 3; j++)
+								if (soduko[i][j] != '.') array[soduko[i][col]] = 0;
+						}
+					}
+					for (flagArray)
 //				{
-//					for col=0 to 8 in soduko,
-//					at every existed number 'exist' stop and modify flagArray[exist] = '0'; 
-//				}
-//				callCheckCol(soduko, flagArray, col);
-//				void callCheckCol(char soduko, int array[], int col);			
-//				{		
-//					for row=0 to 8 in soduko,
-//					at every existed number 'exist' stop and modify flagArray[exist] = '0'; 
 //				}
 //				callCheckSubGrid(soduko, flagArray, row, col);
 //				void callCheckSubGrid(char soduko, int array[], int row, int col);			
