@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "Main.h"
 
-// Tomer's Part !!!!!!!!!!!!!!!!!!!!!!!!!!
+// Solver's part
 
 //	passing on the relevant row values and modify flagArray[existValue] = '0';
 void callCheckRow(char* soduko[], int array[], int row)
@@ -125,26 +125,132 @@ char* callSolver(char soduko)
 //}
 
 
+//Checker's part
+
+int sumRowChecker(char *soduko, int i)
+{
+	int sum = 0, j;
+	for (j = 0; j<9; j++)
+		sum += soduko[i][j];
+	if (sum != 45) return 0;
+	else return 1;
+}
+
+int sumColChecker(char *soduko, int j)
+{
+	int sum = 0, i;
+	for (i = 0; i<9; i++)
+		sum += soduko[i][j];
+	if (sum != 45) return 0;
+	else return 1;
+}
+
+int sumSubGridChecker(char *soduko, int i, int j)
+{
+	int sum = 0, row, col;
+	for (row = i; row < i + 3; row++)
+	{
+		for (col = j; col < j + 3; col++)
+			sum += soduko[i][j];
+		if (sum != 45) return 0;
+		else return 1;
+	}
+}
+
+void printRowDuplications(char *soduko, int* rowDuplicationArray)
+{
+	int k, i, j;
+	for (k = 0; k < 9; k++)
+	{
+		if (!rowDuplicationArray[k])
+		{
+			for (i = 0; i < 9; i++)
+			{
+				for (j = i + 1; j < 9; j++)
+				{
+					if (soduko[k][i] == soduko[k][j])
+					{
+						printf("Line error: digit %c appears at (%d,%d) and (%d,%d)\n", soduko[k][i], k, i, k, j);
+						// how do we make double break; cause we just printed duplication and it gurantees us it's only once in a row for the same digit
+						// break
+					}
+				}
+
+			}
+		}
+	}
+}
+
+void printColDuplications(char *soduko, int* colDuplicationArray)
+{
+	int k, i, j;
+	for (k = 0; k < 9; k++)
+	{
+		if (!colDuplicationArray[k])
+		{
+			for (i = 0; i < 9; i++)
+			{
+				for (j = i + 1; j < 9; j++)
+				{
+					if (soduko[i][k] == soduko[j][k])
+					{
+						printf("Line error: digit %c appears at (%d,%d) and (%d,%d)\n", soduko[i][k], i, k, j, k);
+						// how do we make double break; cause we just printed duplication and it gurantees us it's only once in a row for the same digit
+						// break
+					}
+				}
+
+			}
+		}
+	}
+}
+
+//not finished yet
+void printSubGridDuplications(char *soduko, int* subGridDuplicationArray)
+{
+	int k, i, j; //translate k (subGrid's num) into correspond coordinate => row,col
+	for (k = 0; k < 9; k++)
+	{
+		if (!subGridDuplicationArray[k])
+		{
+			for (i = row; i < row+3; i++)
+			{
+				for (j = i + 1; j < 9; j++)
+				{
+					if (soduko[k][i] == soduko[k][j])
+					{
+						printf("Line error: digit %c appears at (%d,%d) and (%d,%d)\n", soduko[k][i], k, i, k, j);
+						// how do we make double break; cause we just printed duplication and it gurantees us it's only once in a row for the same digit
+						// break
+					}
+				}
+
+			}
+		}
+	}
+}
+
 char* callChecker(char soduko[9][9])
 {
-	int i, j;
+	int i, j, k;
 	int rowGrid = 3 * i;
 	int colGrid = 3 * j;
-	int sumRowChecker(char, int); void printRowDuplications(char);
-	int sumColChecker(char, int); void printColDuplications(char);
-	int sumSubGridChecker(char, int, int); void printSubGridDuplications(char);
-	int isValid = rowChecker && colChecker && subGridChecker;
+	int sumRowChecker(char, int); void printRowDuplications(char, int[]);
+	int sumColChecker(char, int); void printColDuplications(char, int[]);
+	int sumSubGridChecker(char, int, int); void printSubGridDuplications(char, int[]);
+	int isValid = sumRowChecker && sumColChecker && sumSubGridChecker;
+	int rowDuplicationArray[9] = { 1 }, colDuplicationArray[9] = { 1 }, subGridDuplicationArray[9] = { 1 };
 
-	//	going over the matrix and verify that each of the special templates' sum equals 45; This way we can identify duplication quickly;
-	//	ow => there must be duplication
+//	go first through all special templates individually and add the value contents
+//	totals of each sum should equal 45 b / c (1 + 2 + 3 + 4... = 45).If not template must contain duplication; This way we can identify duplication quickly;
 
 	//	check row's sum indication
 	for (i = 0; i < 9; i++)
-		sumRowChecker(soduko, i);
-		
+		rowDuplicationArray[i] = sumRowChecker(soduko, i);
+
 	//	check col's sum indication
 	for (j = 0; j < 9; j++)
-		sumColChecker(soduko, j);
+		colDuplicationArray[j] = sumColChecker(soduko, j);
 
 	//	check subGrid's sum indication
 	i = 0;
@@ -152,23 +258,30 @@ char* callChecker(char soduko[9][9])
 	{
 		j = 0;
 		for (colGrid = 0; colGrid < 9; j++)
-			sumSubGridChecker(soduko, rowGrid, colGrid);
+			// don't know yet how to interpret (row,col) coordinate into subGrid's number where the beggining is from top left
+			subGridDuplicationArray[k] = sumSubGridChecker(soduko, rowGrid, colGrid);
 	}
 
 //	check if there was any error messages by now using 'isValid' function;
 //	if yes => they were already been printed
 //	ow => print success
-	if (isValid) printf("No errors found in given Sudoku puzzle\n");
+	if (isValid)
+	{
+		printf("No errors found in given Sudoku puzzle\n");
+		return 0;
+	}
 	else
 	{
+		printf("Found errors in given Sudoku puzzle.\nThe errors are:\n");
+
 		if (!sumRowChecker)
-			printRowDuplications(soduko);
+			printRowDuplications(soduko, rowDuplicationArray);
 
 		if (!sumColChecker)
-			printRowDuplications(soduko);
+			printColDuplications(soduko, colDuplicationArray);
 
 		if (!sumSubGridChecker)
-			printRowDuplications(soduko);
+			printSubGridDuplications(soduko, subGridDuplicationArray);
 	}
 }
 
@@ -207,6 +320,7 @@ int main()
 	};
 
 	/* Printing the matrix */
+
 	printf("\n -- sudoku before -- \n");
 	for (i = 0; i < 9; i++)
 	{
